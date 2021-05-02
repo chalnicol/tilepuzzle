@@ -7,7 +7,7 @@ class SceneA extends Phaser.Scene {
 
     preload () 
     {
-
+        //..
     }
 
     create () 
@@ -22,7 +22,7 @@ class SceneA extends Phaser.Scene {
 
         this.loadImage ( 'lebronwade' );
 
-        
+      
 
     }
 
@@ -69,7 +69,6 @@ class SceneA extends Phaser.Scene {
             
     }
 
-
     loadImage ( img )
     {
 
@@ -81,9 +80,10 @@ class SceneA extends Phaser.Scene {
         
         this.load.once('complete', () => {
 
-            console.log ('this is complete..');
+            //console.log ('this is complete..');
 
             this.createCells ( key );
+
         });  
 
         this.load.start(); 
@@ -221,7 +221,9 @@ class SceneA extends Phaser.Scene {
 
             }
 
-            console.log ( 'winner', this.checkWinner () );
+           // console.log ( 'winner', this.checkWinner () );
+
+            if ( this.checkWinner() ) this.endGame ();
 
         }
 
@@ -244,4 +246,46 @@ class SceneA extends Phaser.Scene {
     
     }
 
+    endGame () {
+        
+        this.isGameOn = false;
+        
+        this.showPrompt ();
+
+    }
+    showPrompt () {
+
+        this.promptCont = this.add.container (0, 0);
+
+        var bgRect = this.add.rectangle ( 400, 300, 800, 600, 0x0a0a0a, 0.3 ).setInteractive ();
+
+
+        var smRect = this.add.rectangle ( 400, 300, 250, 100, 0xffffff, 0.9 ).setInteractive ();
+
+        smRect.on ('pointerup', () => {
+            
+            this.resetGame ();
+
+        });
+
+        var txt = this.add.text (  400, 290, 'Well Done!', { color:'#0a0a0a', fontSize:20, fontFamily : 'Oswald'} ).setOrigin (0.5);
+
+        var txtb = this.add.text ( 400, 315, 'Click Here To Play Again', { color:'#ff6a6a', fontSize:12, fontFamily : 'Oswald'} ).setOrigin (0.5);
+
+
+        this.promptCont.add ( [ bgRect, smRect, txt, txtb ]);
+
+
+    }
+
+    removePrompt () {
+        this.promptCont.destroy ();
+    }
+
+    resetGame () {
+        //..
+        this.removePrompt ();
+
+        this.jumblePosition ();
+    }
 }
