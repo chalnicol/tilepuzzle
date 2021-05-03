@@ -30,8 +30,9 @@ class SceneA extends Phaser.Scene {
 
         var counter = 0;
 
-        while ( counter < 1000 ) {
+        //while ( counter < 1000 ) {
 
+        var timer = setInterval ( () => {
             
             const adjArr = this.getAdjacents (  this.cellData.r,  this.cellData.c );
                             
@@ -59,9 +60,14 @@ class SceneA extends Phaser.Scene {
     
             counter++;
 
-        }
+            if ( counter >= 500) {
+                clearInterval ( timer);
+                this.isGameOn = true;
+            }
 
-        this.isGameOn = true;
+        }, 1 );
+
+        // this.isGameOn = true;
 
       
 
@@ -83,6 +89,8 @@ class SceneA extends Phaser.Scene {
             //console.log ('this is complete..');
 
             this.createCells ( key );
+
+            this.showPrompt ('Welcome!', 'Click Here to Start', () => this.startGame ());
 
         });  
 
@@ -134,19 +142,20 @@ class SceneA extends Phaser.Scene {
 
         }
 
+    }
+
+    startGame () 
+    {
 
         this.openCell = (this.cellData.r * this.cellData.c) - 1;
         
         this.cells [ this.openCell ].resident = '';
 
-        this.cellsCont.getByName ('cell' + this.openCell ).destroy();
+        this.cellsCont.getByName ('cell' + this.openCell ).setVisible( false ).removeInteractive();
 
-        
-        this.time.delayedCall ( 1000, () => {
+        this.removePrompt ();
 
-            this.jumblePosition ();
-
-        }, [], this);
+        this.jumblePosition ();
 
     }
 
@@ -250,10 +259,11 @@ class SceneA extends Phaser.Scene {
         
         this.isGameOn = false;
         
-        this.showPrompt ();
+        this.showPrompt ('Well Done!!', 'Click Here To Play Again', () => this.resetGame() );
 
     }
-    showPrompt () {
+
+    showPrompt ( mainTxt, caption, func ) {
 
         this.promptCont = this.add.container (0, 0);
 
@@ -264,13 +274,13 @@ class SceneA extends Phaser.Scene {
 
         smRect.on ('pointerup', () => {
             
-            this.resetGame ();
-
+            //this.resetGame ();
+            func ();
         });
 
-        var txt = this.add.text (  400, 290, 'Well Done!', { color:'#0a0a0a', fontSize:20, fontFamily : 'Oswald'} ).setOrigin (0.5);
+        var txt = this.add.text (  400, 290, mainTxt, { color:'#0a0a0a', fontSize:20, fontFamily : 'Oswald'} ).setOrigin (0.5);
 
-        var txtb = this.add.text ( 400, 315, 'Click Here To Play Again', { color:'#ff6a6a', fontSize:12, fontFamily : 'Oswald'} ).setOrigin (0.5);
+        var txtb = this.add.text ( 400, 315, caption, { color:'#ff6a6a', fontSize:12, fontFamily : 'Oswald'} ).setOrigin (0.5);
 
 
         this.promptCont.add ( [ bgRect, smRect, txt, txtb ]);
