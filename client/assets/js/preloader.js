@@ -62,7 +62,7 @@ class Preloader extends Phaser.Scene {
         this.add.text ( 400, 300, 'Click to Proceed', { color : '#333', fontFamily : 'Oswald', fontSize : 24 }).setOrigin(0.5);
 
         this.input.once ('pointerup', () => {
-            this.scene.start('SceneA');
+            this.scene.start('Intro');
         });
 
     }

@@ -10,20 +10,31 @@ class SceneA extends Phaser.Scene {
         //..
     }
 
-    create () 
+    create ( data ) 
     {
 
 
-        this.cellData = { r : 6, c : 6 };
+        this.cellData = { r : data.r, c : data.c };
 
         this.isGameOn = false;
 
-        this.add.rectangle ( 400, 300, 550, 550 ).setStrokeStyle ( 3, 0x0a0a0a );
+        this.add.rectangle ( 400, 300, 540, 540 ).setStrokeStyle ( 2, 0x0a0a0a );
 
         this.loadImage ( 'lebronwade' );
 
-      
+        //create back button
 
+        var back = this.add.container ( 60, 50 ).setDepth(999).setSize ( 80, 40 ).setInteractive();
+
+        var rct = this.add.rectangle ( 0, 0, 80, 40, 0xffffff, 1 ).setStrokeStyle ( 1, 0x0a0a0a );
+
+        var txt = this.add.text (  0, 0, 'Back', { color:'#9c9c9c', fontSize: 20, fontFamily : 'Oswald'} ).setOrigin (0.5);
+
+        back.add ( [ rct, txt ]);
+
+        back.on ('pointerup', () => {
+            this.leaveGame ();
+        });
     }
 
     jumblePosition () {
@@ -155,7 +166,10 @@ class SceneA extends Phaser.Scene {
 
         this.removePrompt ();
 
-        this.jumblePosition ();
+        this.time.delayedCall ( 300, () => {
+            this.jumblePosition ();
+        }, [], this);
+
 
     }
 
@@ -267,7 +281,7 @@ class SceneA extends Phaser.Scene {
 
         this.promptCont = this.add.container (0, 0);
 
-        var bgRect = this.add.rectangle ( 400, 300, 800, 600, 0x0a0a0a, 0.3 ).setInteractive ();
+        var bgRect = this.add.rectangle ( 400, 300, 800, 600, 0x0a0a0a, 0.1 ).setInteractive ();
 
 
         var smRect = this.add.rectangle ( 400, 300, 250, 100, 0xffffff, 0.9 ).setInteractive ();
@@ -280,7 +294,7 @@ class SceneA extends Phaser.Scene {
 
         var txt = this.add.text (  400, 290, mainTxt, { color:'#0a0a0a', fontSize:20, fontFamily : 'Oswald'} ).setOrigin (0.5);
 
-        var txtb = this.add.text ( 400, 315, caption, { color:'#ff6a6a', fontSize:12, fontFamily : 'Oswald'} ).setOrigin (0.5);
+        var txtb = this.add.text ( 400, 315, caption, { color:'#ff3333', fontSize:12, fontFamily : 'Oswald'} ).setOrigin (0.5);
 
 
         this.promptCont.add ( [ bgRect, smRect, txt, txtb ]);
@@ -297,5 +311,9 @@ class SceneA extends Phaser.Scene {
         this.removePrompt ();
 
         this.jumblePosition ();
+    }
+
+    leaveGame () {
+        this.scene.start ('Intro');
     }
 }
